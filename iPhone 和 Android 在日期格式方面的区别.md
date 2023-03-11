@@ -1,4 +1,6 @@
 
+**整篇文章由iPhone 和 Android 在日期格式方面有所不同引起，大致介绍了，两种时间标准，以及在 JavaScript 下的格式转换方法。**
+
 **Unix 时间戳是从1970年1月1日(UTC/GMT的午夜)开始所经过的秒数,不考虑闰秒。**
 
 
@@ -90,7 +92,89 @@ Mon, 21 Mar 2022 02:03:48 GMT (UTC 时间格式)
 
 这种方法适用于将时间戳转换为标准的时间格式，使其更易于阅读和理解的情况。
 
+### 不同时区转换
+
+在JavaScript中，可以使用Date对象将CST时间和UTC时间之间进行相互转换。以下是一个将CST时间转换为UTC时间的示例代码：
+
+```
+// 指定CST时间字符串（例如2021-08-10 12:30:15）
+let cst_time_str = '2021-08-10 12:30:15';
+
+// 将CST时间字符串转换为Date对象，并指定时区为CST (-6:00)
+let cst_time = new Date(cst_time_str + ' GMT-0600');
+
+// 将CST时间转换为UTC时间，并格式化为UTC时间字符串
+let utc_time_str = cst_time.toISOString();
+console.log("转换后的UTC时间：", utc_time_str);
+```
+
+输出结果：
+
+```
+转换后的UTC时间： 2021-08-10T18:30:15.000Z
+```
+
+这里先将CST时间字符串转换为Date对象，并通过指定时区为CST（GMT-0600）来确保正确解析时间。然后，将CST时间转换为UTC时间，并使用toISOString()方法将其格式化为UTC时间字符串。
+
+以下是一个将UTC时间转换为CST时间的示例代码：
+
+```
+// 指定UTC时间字符串（例如2021-08-10T04:30:15.000Z）
+let utc_time_str = '2021-08-10T04:30:15.000Z';
+
+// 将UTC时间字符串转换为Date对象
+let utc_time = new Date(utc_time_str);
+
+// 将UTC时间转换为CST时间，并格式化为CST时间字符串
+let cst_time_str = utc_time.toLocaleString('en-US', {timeZone: 'America/Chicago'});
+console.log("转换后的CST时间：", cst_time_str);
+
+// 'zh-cn' //zh-hans
+//TIME_ZONE = 'Asia/Shanghai'
+cst_time_str = utc_time.toLocaleString('zh-cn', {timeZone: 'Asia/Shanghai'});
+console.log("转换后的CST时间：", cst_time_str);
+
+```
+
+输出结果：
+
+```
+转换后的CST时间： 8/9/2021, 11:30:15 PM
+
+转换后的CST时间： 2021/8/10 12:30:15
+```
+
+这里先将UTC时间字符串转换为Date对象。然后，利用toLocaleString()方法，将UTC时间转换为美国中部时区（'America/Chicago'）的本地时间，并进行格式化为CST时间字符串。
+
+CST可视为美国、澳大利亚、古巴或中国的标准时间。CST可以为如下4个不同的时区的缩写：  
+
+1、美国中部时间：CentralStandardTime（USA）UT-6:00；  
+2、澳大利亚中部时间：CentralStandardTime（Australia）UT+9:30；  
+3、中国标准时间：ChinaStandardTimeUT+8:00；  
+4、古巴标准时间：CubaStandardTimeUT-4:00。  
+
 ### 总结
  - 我们传递和储存时间一律使用时间戳。
  - 在 JS 中可以使用 date.toISOString(); // 输出标准的 ISO 8601 时间格式
+ - 不同时区转换可以通过设置timeZone来实现
+ 
+---
+
+### 时间标准
+
+- 世界标准时间（UTC）协调世界时（英：Coordinated Universal Time ，法：Temps Universel Coordonné），又称世界统一时间，世界标准时间，国际协调时间。英文（CUT）和法文（TUC）的缩写不同，作为妥协，简称 UTC。它是目前国际上广泛采用的精确时间标准。UTC 是建立在原子钟技术基础之上的，以国际原子时为基础，每秒恒等于9,192,631,770个原子振动周期的时间单位。
+
+ 
+  世界标准时间UTC：GMT+0
+
+- 格林威治时间（GMT）是指在英国伦敦的本初子午线上，以24小时制度所示的时间。过去，GMT 曾是国际上通用的时间标准，但随着科技进步和航空旅行的需求，逐渐改为更为精确的时间标准。
+世界时UT 即格林尼治时间，格林尼治所在地的标准时间。
+
+  以地球自转为基础的时间计量系统。地球自转的角度可用地方子午线相对于地球上的基本参考点的运动来度量。为了测量地球自转，人们在地球上选取了两个基本参考点：春分点（见分至点）和平太阳，由此确定的时间分别称为恒星时和平太阳时。
+
+  但是格林尼治本地的时间比格林尼治平时，大一小时，也就是格林尼治本地的时间：GMT+1
+
+两者的区别在于，GMT 是按太阳高度的变化来计算时间的，而 UTC 是一种原子钟制时间标准，更为精确和准确。此外，UTC 使用了闰秒的方法来保持与地球自转周期的匹配，而 GMT 则不考虑地球自转周期和夏令时等因素的变化，因此 UTC 更为准确和实用。
+
+
 
