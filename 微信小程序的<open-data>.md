@@ -23,3 +23,6 @@ userCity：用户所在城市
 userProvince：用户所在省份  
 userCountry：用户所在国家  
 userLanguage：用户的语言
+
+**注意：**
+getUserProfile{"errMsg":"getUserProfile:fail can only be invoked by user TAP gesture."}
