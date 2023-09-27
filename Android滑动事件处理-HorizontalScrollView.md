@@ -1,8 +1,8 @@
-一、滑动冲突情景分析
+### 一、滑动冲突情景分析
 Android开发中，控件、容器的嵌套时常会导致滑动冲突的问题出现。下面列举常见的一种情况：
 主界面一个ViewPager，包含多个fragment，fragment布局中还有可能包含HorizontalScrollView。当HorizontalScrollView向左或向右滑动时，滑动的是当前fragment布局中的控件，这没问题。但当HorizontalScrollView滑到边界时，再向前滑动的事件应该要切换到ViewPager上的fragment之间切换才对。而由于滑动冲突，HorizontalScrollView 滑到边界时，再向前滑动的触摸事件没有交给它的父控件ViewPager处理，所以，无法流畅地在fragment间切换。
 
-二、滑动冲突问题处理
+### 二、滑动冲突问题处理
 为了解决上面的问题，就要通过getParent().requestDisallowInterceptTouchEvent(false); 来进行事件的切换才行。源码如下：
 
 package com.wei.wanandroid.widgets;
@@ -108,7 +108,7 @@ public class CusHorizontalScrollView extends HorizontalScrollView {
     }
 }
 
-三、总结
+### 三、总结
 滑动冲突的解决方式有两种：
 1.外部拦截法：触摸事件都先经过父容器的拦截处理，如果父容器需要此事件就拦截，不需要就不拦截（此方法符合view事件分发机制），这样就可以解决滑动冲突问题。需要重写onInterceptTouchEvent方法，伪代码如下：
 
@@ -172,7 +172,7 @@ public class CusHorizontalScrollView extends HorizontalScrollView {
         return super.dispatchTouchEvent(ev);
     }
 
-源码解析
+### 源码解析
 了解过事件分发的同学都知道，View事件分发的三个核心方法分别是dispatchTouchEvent、onInterceptTouchEvent、onTouchEvent。
 
 dispatchTouchEvent主要负责事件的分发，onInterceptTouchEvent用来表示ViewGroup是否拦截事件，onTouchEvent表示当前View对事件进行处理。
