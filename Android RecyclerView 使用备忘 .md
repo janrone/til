@@ -25,3 +25,42 @@ Adapter:
   }
 
 ```
+
+前言： 由于NestedScrollView没有直接的方法让你滚动到内部RecyclerView的特定item，你需要通过计算该item在RecyclerView中的位置（即Y坐标），然后使用NestedScrollView的scrollTo()或smoothScrollTo()方法来模拟滚动。
+
+    避免RecyclerView的item没有绘制完成，我这里使用延时滚动。获取item坐标，需要加上实际业务的padding、margin、其他布局占位等，总之根据实际情况调整。
+
+   方法一、
+   ```
+
+   private void scrollToIndex(){
+        nestedScrollView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                RecyclerView.LayoutManager layoutManager =recyclerView.getLayoutManager();
+                if(layoutManager!=null){
+                    View viewByPosition=layoutManager.findViewByPosition(index);
+                    if (viewByPosition != null) {
+                        int distance=viewByPosition.getTop();
+                        nestedScrollView.smoothScrollTo(0, distance);//可以加上实际业务的内外间距等
+                    }
+                }
+            }
+        },1000);
+    }
+```
+方法二、
+```
+
+private void scrollToIndex(){
+        nestedScrollView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(index);
+                if (viewHolder != null) {
+                    int distance = viewHolder.itemView.getTop(); 
+                    nestedScrollView.smoothScrollTo(0, distance);//可以加上实际业务的内外间距等
+                }
+            }
+        },1000);
+```
